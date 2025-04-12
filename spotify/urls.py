@@ -23,5 +23,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("auth/callback", ClerkAuthCallback.as_view()),
+    path('albums/', get_all_albums),
 
 ]

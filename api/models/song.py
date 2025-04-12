@@ -1,22 +1,13 @@
 from django.db import models
 
-# Create your models here.
-class song(models.Model):
-    title = models.CharField(max_length=255,unique=True)
+class Song(models.Model):
+    title = models.CharField(max_length=255)
     artist = models.CharField(max_length=255)
-    imagineUrl = models.CharField(max_length=255)
-    audioUrl = models.CharField(max_length=255)
-    duration = models.DurationField(("Duration"))
-    albumid = models.ForeignKey(
-        'album',
-        on_delete=models.SET_NULL,
-        null = True,
-        blank = True
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
+    image_url = models.CharField(max_length=255,null=True)
+    audio_url = models.CharField(max_length=255)
+    duration = models.IntegerField()
+    plays = models.IntegerField(default=0)
+    album = models.ForeignKey("Album", on_delete=models.SET_NULL, null=True, blank=True, related_name="songs")
 
     def __str__(self):
-        return f"{self.title} - {self.artist} - {self.imagineUrl} - {self.audioUrl} - {self.duration} - {self.albumid} - {self.created_at} - {self.updated_at}"
-    
+        return self.title

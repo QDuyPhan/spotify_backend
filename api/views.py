@@ -4,6 +4,9 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from .models import user
+from api.models.album import Album
+from rest_framework.decorators import api_view
+from api.serializer import albumSerializer
 
 # Create your views here.
 User = get_user_model()
@@ -33,3 +36,12 @@ class ClerkAuthCallback(APIView):
             user_obj.save()
 
         return Response({"message": "User synced"}, status=status.HTTP_200_OK)
+    
+@api_view(['GET'])
+def get_all_albums(request):
+    try:
+        albums = Album.objects.all()
+        serializer = albumSerializer(albums, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
