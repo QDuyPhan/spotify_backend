@@ -1,5 +1,5 @@
 """
-URL configuration for spotify project.
+URL configuration for spotify_backend project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -15,13 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from api.views import *
-from api.views import ClerkAuthCallback
+from django.urls import path,include
+from spotify_app.api.authentication import *
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework.routers import DefaultRouter
 
+router = DefaultRouter()
 urlpatterns = [
-    path('admin/', admin.site.urls),
+   # path('admin/', admin.site.urls),
     path("auth/callback", ClerkAuthCallback.as_view()),
-
+    path('api/', include('spotify_app.urls'))
 ]

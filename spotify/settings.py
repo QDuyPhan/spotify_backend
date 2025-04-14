@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework.authtoken',
     'rest_framework',
-    'api.apps.ApiConfig',
+    'spotify_app.apps.ApiConfig',
     'corsheaders',
 ]
 
@@ -84,7 +84,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',   
         'NAME': 'spotify_clone',            
         'USER': 'root',                      
-        'PASSWORD': 'root',                   
+        # 'PASSWORD': 'root',                   
         'HOST': 'localhost',                   
         'PORT': '3306',        
     }
