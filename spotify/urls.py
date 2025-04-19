@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from spotify_app.api.authentication import *
+from spotify_app.api.authenticationView import *
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.routers import DefaultRouter
 
@@ -24,5 +24,5 @@ router = DefaultRouter()
 urlpatterns = [
    # path('admin/', admin.site.urls),
     path("auth/callback", ClerkAuthCallback.as_view()),
-    path('api/', include('spotify_app.urls'))
+    path('', include('spotify_app.urls'))
 ]

@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from decouple import config
 from pathlib import Path
-
+import os
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,6 +28,15 @@ SECRET_KEY = 'django-insecure-xtolk777+0$j@wz11y5e@2!60p4mu4!weqtt+w%m*sof0svm9w
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'spotify_app.middleware.clerkMiddleware.ClerkJWTAuthentication',
+        # có thể thêm các lớp khác như:
+        # 'rest_framework.authentication.SessionAuthentication',
+    ),
+}
+
 
 
 # Application definition
@@ -53,6 +64,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    # 'spotify_app.middleware.clerkMiddleware.ProtectRouteMiddleware',
+    # 'spotify_app.middleware.clerkMiddleware.RequireAdminMiddleware',
+    # 'spotify_app.middleware.clerkMiddleware.ClerkJWTAuthentication',
 ]
 
 ROOT_URLCONF = 'spotify.urls'
@@ -132,5 +146,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+load_dotenv()
+
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 
 CORS_ALLOW_ALL_ORIGINS = True

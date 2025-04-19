@@ -25,6 +25,10 @@ class Song(models.Model):
     audio_url = models.CharField(max_length=255)
     plays = models.IntegerField(default=0)
     duration = models.IntegerField()
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     album = models.ForeignKey('spotify_app.Album', on_delete=models.SET_NULL, null=True, related_name='songs')
 
     def __str__(self):

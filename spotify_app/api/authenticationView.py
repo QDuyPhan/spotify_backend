@@ -1,6 +1,5 @@
 from django.shortcuts import render
 # 
-from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
@@ -9,7 +8,7 @@ from ..models import User
 
 class ClerkAuthCallback(APIView):
     def post(self, request):
-        print("Request Data:", request.data)
+        # print("Request Data:", request.data)
         clerk_id = request.data.get('id')
         first_name = request.data.get('firstName', '')
         last_name = request.data.get('lastName', '')
@@ -41,7 +40,7 @@ class ClerkAuthCallback(APIView):
                 "message": "User synced successfully",
                 "user_id": user.id
             }
-            print("Response Data:", response_data)
+            # print("Response Data:", response_data)
 
             return Response(response_data, status=status.HTTP_200_OK)
 
