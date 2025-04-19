@@ -35,7 +35,6 @@ class Command(BaseCommand):
                 artist=data["artist"],
                 image_url=data["image_url"],
                 audio_url=data["audio_url"],
-                plays=random.randint(0, 5000),
                 duration=data["duration"]
             )
             created_songs.append(song)

@@ -6,6 +6,10 @@ class user(models.Model):
     clerk_id = models.CharField(max_length=100, blank=True, null=True, unique=True) 
     fullName = models.CharField(max_length=255)
     imageUrl = models.URLField(max_length=255)
+    email = models.EmailField(unique=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
+    @property
+    def is_authenticated(self):
+        return True

@@ -7,41 +7,71 @@ from .models import user
 from api.models.album import Album
 from rest_framework.decorators import api_view
 from api.serializer import albumSerializer
-
+from api.serializer import userSerializer
+from rest_framework.permissions import IsAuthenticated
+from django.core.exceptions import PermissionDenied
+from django.conf import settings
+from rest_framework.decorators import api_view, permission_classes
+from .authentication import ClerkJWTAuthentication
 # Create your views here.
 User = get_user_model()
-
 
 class ClerkAuthCallback(APIView):
     def post(self, request):
         clerk_id = request.data.get('id')
-        first_name = request.data.get('firstName')
-        last_name = request.data.get('lastName')
-        fullName = f"{first_name} {last_name}"
-        imageUrl = request.data.get('imageUrl')
+        first_name = request.data.get('firstName', '')
+        last_name = request.data.get('lastName', '')
+        full_name = f"{first_name} {last_name}".strip()
+        image_url = request.data.get('imageUrl', '')
+        email = request.data.get('email', '')
 
-        # Tìm hoặc tạo user bằng clerk_id
         user_obj, created = user.objects.get_or_create(
             clerk_id=clerk_id,
             defaults={
-                'fullName': fullName,
-                'imageUrl': imageUrl
+                'fullName': full_name,
+                'imageUrl': image_url,
+                'email': email,
             }
         )
 
-        # Nếu user đã tồn tại, cập nhật fullName & imageUrl (nếu bạn muốn cập nhật)
+        # Optional update if user already exists
         if not created:
-            user_obj.fullName = fullName
-            user_obj.imageUrl = imageUrl
+            user_obj.fullName = full_name
+            user_obj.imageUrl = image_url
+            user_obj.email = email
             user_obj.save()
 
         return Response({"message": "User synced"}, status=status.HTTP_200_OK)
     
+
+class CheckAdminView(APIView):
+    authentication_classes = [ClerkJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        if request.user.email != settings.ADMIN_EMAIL:
+            raise PermissionDenied("Unauthorized - you must be an admin")
+        return Response({"admin": True})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_users(request):
+    current_user_clerk_id = request.user.clerk_id
+    users = user.objects.exclude(clerk_id=current_user_clerk_id)
+    serializer = userSerializer(users, many=True)
+    return Response(serializer.data)
+
 @api_view(['GET'])
 def get_all_albums(request):
+    albums = Album.objects.all()
+    serializer = albumSerializer(albums, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_album_by_id(request, id):
     try:
-        albums = Album.objects.all()
-        serializer = albumSerializer(albums, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        album = Album.objects.prefetch_related('songs').get(id=id)
+        serializer = albumSerializer(album)
+        return Response(serializer.data)
+    except Album.DoesNotExist:
+        return Response({'message': 'Album not found'}, status=status.HTTP_404_NOT_FOUND)

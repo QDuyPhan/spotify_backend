@@ -18,11 +18,14 @@ from django.contrib import admin
 from django.urls import path
 from api.views import *
 from api.views import ClerkAuthCallback
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from api.middlewares import ProtectRouteMiddleware, RequireAdminMiddleware
+from django.utils.decorators import decorator_from_middleware
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("auth/callback", ClerkAuthCallback.as_view()),
     path('albums/', get_all_albums),
-
+    path('albums/<int:id>/', get_album_by_id),
+    path('users/', get_all_users),
+    path('admin/check/', CheckAdminView.as_view()),
 ]

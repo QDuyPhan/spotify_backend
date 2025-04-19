@@ -133,4 +133,17 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+ADMIN_EMAIL = 'phanquangduytvt@gmail.com'
+
+CLERK_JWKS_URL = "https://picked-pigeon-9.clerk.accounts.dev/.well-known/jwks.json"
+CLERK_AUDIENCE = "pk_test_cGlja2VkLXBpZ2Vvbi05LmNsZXJrLmFjY291bnRzLmRldiQ"
+
 CORS_ALLOW_ALL_ORIGINS = True
+# REST_FRAMEWORK = {
+#    'DEFAULT_AUTHENTICATION_CLASSES': [
+#         'api.authentication.ClerkJWTAuthentication'
+#     ],
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAuthenticated',
+#     ]
+# }
