@@ -29,13 +29,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'spotify_app.middleware.clerkMiddleware.ClerkJWTAuthentication',
-        # có thể thêm các lớp khác như:
-        # 'rest_framework.authentication.SessionAuthentication',
-    ),
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'spotify_app.middleware.clerkMiddleware.ClerkJWTAuthentication',
+#         # có thể thêm các lớp khác như:
+#         # 'rest_framework.authentication.SessionAuthentication',
+#     ),
+# }
 
 
 
@@ -66,7 +66,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     # 'spotify_app.middleware.clerkMiddleware.ProtectRouteMiddleware',
     # 'spotify_app.middleware.clerkMiddleware.RequireAdminMiddleware',
-    # 'spotify_app.middleware.clerkMiddleware.ClerkJWTAuthentication',
+    #  'spotify_app.middleware.clerkMiddleware.ClerkJWTAuthentication',
 ]
 
 ROOT_URLCONF = 'spotify.urls'
