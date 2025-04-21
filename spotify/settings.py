@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'spotify_app.middleware.clerkMiddleware.ClerkJWTAuthentication',
+        # 'spotify_app.middleware.clerkMiddleware.ClerkJWTAuthentication',
         # có thể thêm các lớp khác như:
         # 'rest_framework.authentication.SessionAuthentication',
     ),
@@ -98,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',   
         'NAME': 'spotify_clone',            
         'USER': 'root',                      
-        # 'PASSWORD': 'root',                   
+        'PASSWORD': 'root',                   
         'HOST': 'localhost',                   
         'PORT': '3306',        
     }

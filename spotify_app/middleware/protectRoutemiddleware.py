@@ -3,10 +3,9 @@ from django.conf import settings
 import jwt
 import requests
 from django.core.cache import cache
-from spotify_app.models import CustomUser
+
 
 class ProtectRouteMiddleware:
-
 
     def __call__(self, request):
         # Bỏ qua các URL công khai

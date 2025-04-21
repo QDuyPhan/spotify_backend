@@ -17,7 +17,7 @@ class Command(BaseCommand):
             {"title": "Neon Dreams", "artist": "Cyber Pulse", "image_url": "/cover-images/13.jpg", "audio_url": "/songs/13.mp3", "duration": 39},
             {"title": "Summer Daze", "artist": "Coastal Kids", "image_url": "/cover-images/4.jpg", "audio_url": "/songs/4.mp3", "duration": 24},
             {"title": "Ocean Waves", "artist": "Coastal Drift", "image_url": "/cover-images/9.jpg", "audio_url": "/songs/9.mp3", "duration": 28},
-            {"title": "Crystal Rain", "artist": "Echo Valley", "image_url": "/cover-images/16.jpg", "audio_url": "/songs/16.mp3", "duration": 39},
+            {"title": "Crystal Rain", "artist": "Echo Valley", "image_url": "/cover-images/16.jpg", "audio_url": "/songs/16.mp3", "duration": 230},
             {"title": "Starlight", "artist": "Luna Bay", "image_url": "/cover-images/10.jpg", "audio_url": "/songs/10.mp3", "duration": 30},
             {"title": "Stay With Me", "artist": "Sarah Mitchell", "image_url": "/cover-images/1.jpg", "audio_url": "/songs/1.mp3", "duration": 46},
             {"title": "Midnight Drive", "artist": "The Wanderers", "image_url": "/cover-images/2.jpg", "audio_url": "/songs/2.mp3", "duration": 41},
