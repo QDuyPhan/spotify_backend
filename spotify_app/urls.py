@@ -11,4 +11,5 @@ router.register(r'users', UserViewSet)
 # router.register(r'admin',AdminCheckViewSet, basename='admin')
 urlpatterns = [
     path('', include(router.urls)),
+    
 ]

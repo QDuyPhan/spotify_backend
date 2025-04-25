@@ -29,14 +29,20 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'spotify_app.middleware.clerkMiddleware.ClerkJWTAuthentication',
-#         # có thể thêm các lớp khác như:
-#         # 'rest_framework.authentication.SessionAuthentication',
-#     ),
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'spotify_app.auth.authentication.ClerkJWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+# CLERK_JWT_OPTIONS = {
+#     "verify_iat": False,  # Tạm bỏ kiểm tra thời gian (chỉ dùng cho dev)
+#     "verify_nbf": False
 # }
-
 
 
 # Application definition
@@ -64,9 +70,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'spotify_app.middleware.clerkMiddleware.ProtectRouteMiddleware',
-    # 'spotify_app.middleware.clerkMiddleware.RequireAdminMiddleware',
-    #  'spotify_app.middleware.clerkMiddleware.ClerkJWTAuthentication',
 ]
 
 ROOT_URLCONF = 'spotify.urls'
@@ -150,5 +153,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 load_dotenv()
 
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
-
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+]

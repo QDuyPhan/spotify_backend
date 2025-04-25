@@ -1,40 +1,43 @@
+# adminView.py
 import os
 from dotenv import load_dotenv
-from rest_framework import viewsets
-from rest_framework.decorators import action
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django.views.decorators.http import require_GET
-from django.http import JsonResponse
-from rest_framework.views import APIView
-from spotify_app.middleware.clerkMiddleware import ClerkJWTAuthentication
+from spotify_app.auth.authentication import ClerkJWTAuthentication
+
 # Load biến môi trường
 load_dotenv()
 
-# class AdminCheckViewSet(viewsets.ViewSet):
-#     # permission_classes = [IsAuthenticated]
+# adminView.py
+import os
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from spotify_app.auth.authentication import ClerkJWTAuthentication
 
-#     @action(detail=False, methods=["get"], url_path="check")
-#     def check_admin(self, request):
-#         admin_email = os.getenv("ADMIN_EMAIL")
-#         user_email = request.user.email
-
-#         is_admin = user_email == admin_email
-#         return Response({
-#             "email": user_email,
-#             "is_admin": is_admin
-#         })
-        
-#     @require_GET
-#     def create_song(request):
-#     # Giả sử bạn có thể truy cập request.user từ middleware
-#         return JsonResponse({"message": "Song created by admin!"})    
-
-
-class AdminCheckView(APIView): 
+class AdminCheckView(APIView):
     authentication_classes = [ClerkJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        is_admin = getattr(request.user, "is_admin", False)
-        return Response({"admin": is_admin})
+        # Kiểm tra email từ user object
+        user_email = getattr(request.user, "email", None)
+        if not user_email:
+            return Response({"error": "Email not found in user object"}, status=400)
+        
+        print(f"🧾 User email from request: {user_email}")
+
+        # Kiểm tra quyền admin
+        admin_email = os.getenv("ADMIN_EMAIL", "minhthinh9229@gmail.com")
+        is_admin = user_email == admin_email
+
+        if not is_admin:
+            print(f"⛔ Unauthorized access attempt by: {user_email}")
+            return Response({"message": "Unauthorized - admin privileges required"}, status=403)
+
+        print(f"✅ Admin access granted to: {user_email}")
+        return Response({
+            "email": user_email,
+            "admin": is_admin,
+        })
