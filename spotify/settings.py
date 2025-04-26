@@ -14,9 +14,9 @@ from decouple import config
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -30,13 +30,19 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'spotify_app.middleware.clerkMiddleware.ClerkJWTAuthentication',
-        # có thể thêm các lớp khác như:
-        # 'rest_framework.authentication.SessionAuthentication',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'spotify_app.auth.authentication.ClerkJWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
 }
-
+# CLERK_JWT_OPTIONS = {
+#     "verify_iat": False,  # Tạm bỏ kiểm tra thời gian (chỉ dùng cho dev)
+#     "verify_nbf": False
+# }
 
 
 # Application definition
@@ -64,9 +70,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'spotify_app.middleware.clerkMiddleware.ProtectRouteMiddleware',
-    # 'spotify_app.middleware.clerkMiddleware.RequireAdminMiddleware',
-    # 'spotify_app.middleware.clerkMiddleware.ClerkJWTAuthentication',
 ]
 
 ROOT_URLCONF = 'spotify.urls'
@@ -89,22 +92,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'spotify.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',   
-        'NAME': 'spotify_clone',            
-        'USER': 'root',                      
-        'PASSWORD': 'root',                   
-        'HOST': 'localhost',                   
-        'PORT': '3306',        
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'spotify_clone',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -124,7 +124,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -135,7 +134,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -150,5 +148,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 load_dotenv()
 
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
-
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+]
