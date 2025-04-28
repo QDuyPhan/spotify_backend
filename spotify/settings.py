@@ -58,6 +58,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'spotify_app.apps.ApiConfig',
     'corsheaders',
+    # 'cloudinary_storage',
+    # 'django.contrib.staticfiles',
+    # 'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -103,6 +106,16 @@ DATABASES = {
         'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '3306',
+        # 'OPTIONS': {
+        #     'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        # },
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-cache-key',
     }
 }
 
@@ -154,3 +167,12 @@ CORS_ALLOW_HEADERS = [
     'content-type',
     'authorization',
 ]
+#
+# CLOUDINARY_STORAGE = {
+#     'CLOUD_NAME': 'dsx7hz768',
+#     'API_KEY': '254134666797482',
+#     'API_SECRET': 'FYRpjprN6Tdhl-hxXsgaRE4ck04'
+# }
+#
+# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# MEDIA_URL = '/media/'
