@@ -14,6 +14,10 @@ from decouple import config
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -58,9 +62,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'spotify_app.apps.ApiConfig',
     'corsheaders',
-    # 'cloudinary_storage',
-    # 'django.contrib.staticfiles',
-    # 'cloudinary',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -167,12 +170,18 @@ CORS_ALLOW_HEADERS = [
     'content-type',
     'authorization',
 ]
-#
+
 # CLOUDINARY_STORAGE = {
-#     'CLOUD_NAME': 'dsx7hz768',
-#     'API_KEY': '254134666797482',
-#     'API_SECRET': 'FYRpjprN6Tdhl-hxXsgaRE4ck04'
+#     'CLOUD_NAME': '',
+#     'API_KEY': '',
+#     'API_SECRET': ''
 # }
-#
-# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+cloudinary.config( 
+  cloud_name = "dsx7hz768", 
+  api_key = "254134666797482", 
+  api_secret = "FYRpjprN6Tdhl-hxXsgaRE4ck04" 
+)
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # MEDIA_URL = '/media/'

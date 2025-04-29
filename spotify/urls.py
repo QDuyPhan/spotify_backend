@@ -18,9 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 
 from spotify_app.api.adminView import AdminCheckView
-from spotify_app.api.albumView import AlbumViewSet, AlbumDetailAPIView
+from spotify_app.api.albumView import AlbumViewSet, AlbumDetailAPIView, CreateAlbumView
 from spotify_app.api.authenticationView import *
 from spotify_app.api.songView import (
+    CreateSongView,
     get_featured_songs,
     get_made_for_you_songs,
     get_trending_songs, GetAllSongsView,
@@ -44,7 +45,8 @@ urlpatterns = [
     path('albums/', AlbumViewSet.as_view()),
     path('albums/<int:album_id>/', AlbumDetailAPIView.as_view()),
     path('stats/', StatsView.as_view()),
-
+    path('admin/songs', CreateSongView.as_view(), name='create_song'),
+     path('admin/albums', CreateAlbumView.as_view(), name='create-album'),
     path('', include('spotify_app.urls'))
 
 ]

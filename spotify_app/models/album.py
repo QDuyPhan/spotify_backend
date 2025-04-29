@@ -20,7 +20,7 @@ from django.db import models
 class Album(models.Model):
     title = models.CharField(max_length=255)
     artist = models.CharField(max_length=255)
-    image_url = models.CharField(max_length=255)
+    image_url = models.CharField(max_length=1024)
     release_year = models.IntegerField()
 
     created_at = models.DateTimeField(auto_now_add=True)
