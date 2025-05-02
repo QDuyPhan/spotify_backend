@@ -18,10 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 
 from spotify_app.api.adminView import AdminCheckView
-from spotify_app.api.albumView import AlbumViewSet, AlbumDetailAPIView, CreateAlbumView
+from spotify_app.api.albumView import AlbumSongsOfUserView, AlbumViewSet, AlbumDetailAPIView, CreateAlbumByUserView, CreateAlbumView, DeleteAlbumView, ListAlbumsOfUserView
 from spotify_app.api.authenticationView import *
 from spotify_app.api.songView import (
+    AddSongToAlbumView,
     CreateSongView,
+    DeleteSongView,
+    FavoriteSongView,
+    ListFavoriteSongsView,
     get_featured_songs,
     get_made_for_you_songs,
     get_trending_songs, GetAllSongsView,
@@ -46,7 +50,15 @@ urlpatterns = [
     path('albums/<int:album_id>/', AlbumDetailAPIView.as_view()),
     path('stats/', StatsView.as_view()),
     path('admin/songs', CreateSongView.as_view(), name='create_song'),
-     path('admin/albums', CreateAlbumView.as_view(), name='create-album'),
+    path('admin/albums', CreateAlbumView.as_view(), name='create-album'),
+    path('admin/songs/<int:id>/', DeleteSongView.as_view(), name='delete-song'),
+    path('/admin/albums/<int:id>/', DeleteAlbumView.as_view(), name='delete-album'),
+    path('albums/user/create/', CreateAlbumByUserView.as_view(), name='user-create-album'),
+    path("albums/user/", ListAlbumsOfUserView.as_view(), name="list-user-albums"),
+    path("songs/user-albums/add-song/", AddSongToAlbumView.as_view(), name="add-song-to-album"),
+    path('albums/<int:album_id>/songs/', AlbumSongsOfUserView.as_view(),name='album-songs-of-user'),
+    path('songs/favorite/', FavoriteSongView.as_view(), name='favorite-song'),
+    path('songs/favorite/list/', ListFavoriteSongsView.as_view(), name='favorite-song-list'),
     path('', include('spotify_app.urls'))
 
 ]

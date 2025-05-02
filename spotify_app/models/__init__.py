@@ -8,4 +8,6 @@ from .album import Album
 from .song import Song
 from .user import User
 from .message import Message
-__all__ = ['Album', 'Message', 'Song', 'User']
+from .albumSong import AlbumSong
+
+__all__ = ['Album', 'Message', 'Song', 'User', 'AlbumSong']

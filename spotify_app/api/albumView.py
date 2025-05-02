@@ -8,6 +8,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
+from spotify_app.models.user import User
+from ..models.song import Song
+
 from spotify_app.auth.authentication import ClerkJWTAuthentication
 from spotify_app.auth.permission import IsAdminUser
 
@@ -29,6 +32,7 @@ class AlbumDetailAPIView(APIView):
     def get(self, request, album_id):
         album = get_object_or_404(Album.objects.prefetch_related('songs'), id=album_id)
         serializer = albumSerializer(album)
+        print("album ${album}")
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 def upload_to_cloudinary(file):
@@ -66,4 +70,116 @@ class CreateAlbumView(APIView):
 
         except Exception as e:
             traceback.print_exc()
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class DeleteAlbumView(APIView):
+    authentication_classes = [ClerkJWTAuthentication]
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def delete(self, request, id):
+        try:
+            # Xoá tất cả các bài hát thuộc album
+            Song.objects.filter(album_id=id).delete()
+
+            # Xoá album
+            Album.objects.get(pk=id).delete()
+
+            return Response({"message": "Album deleted successfully"}, status=status.HTTP_200_OK)
+
+        except Album.DoesNotExist:
+            return Response({"error": "Album not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            print("Error in DeleteAlbumView:", e)
+            return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class CreateAlbumByUserView(APIView):
+    authentication_classes = [ClerkJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            title = request.data.get('title')
+            artist = request.data.get('artist')
+            release_year = request.data.get('release_year')
+            image_file = request.FILES.get('imageFile')
+
+            if not all([title, artist, release_year, image_file]):
+                return Response({"error": "Missing required fields."}, status=status.HTTP_400_BAD_REQUEST)
+
+            image_url = upload_to_cloudinary(image_file)
+
+            # ✅ Lấy User thật từ DB bằng clerk_id từ JWT payload
+            clerk_id = getattr(request.user, "clerk_id", None)
+            if not clerk_id:
+                return Response({"error": "User authentication failed"}, status=status.HTTP_401_UNAUTHORIZED)
+
+            try:
+                user = User.objects.get(clerk_id=clerk_id)
+            except User.DoesNotExist:
+                return Response({"error": "User not found in database"}, status=status.HTTP_404_NOT_FOUND)
+
+            album = Album.objects.create(
+                title=title,
+                artist=artist,
+                image_url=image_url,
+                release_year=release_year,
+                owner=user
+            )
+
+            serializer = albumSerializer(album)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            traceback.print_exc()
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class ListAlbumsOfUserView(APIView):
+    authentication_classes = [ClerkJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            clerk_id = getattr(request.user, "clerk_id", None)
+            if not clerk_id:
+                return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+
+            try:
+                user = User.objects.get(clerk_id=clerk_id)
+            except User.DoesNotExist:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            albums = Album.objects.filter(owner=user).order_by("-id")
+            serializer = albumSerializer(albums, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class AlbumSongsOfUserView(APIView):
+    authentication_classes = [ClerkJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, album_id):
+        try:
+            clerk_id = getattr(request.user, "clerk_id", None)
+            if not clerk_id:
+                return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+
+            try:
+                user = User.objects.get(clerk_id=clerk_id)
+            except User.DoesNotExist:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            try:
+                album = Album.objects.get(id=album_id, owner=user)
+            except Album.DoesNotExist:
+                return Response({"error": "Album not found or you do not have permission."}, status=status.HTTP_404_NOT_FOUND)
+
+            songs = album.songs.all()
+            from spotify_app.serializers.songserializers import songSerializer
+            serializer = songSerializer(songs, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
