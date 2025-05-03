@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework.authtoken',
     'rest_framework',
+    'channels',
     'spotify_app.apps.ApiConfig',
     'corsheaders',
 ]
@@ -159,3 +160,13 @@ CORS_ALLOW_HEADERS = [
     'content-type',
     'authorization',
 ]
+
+ASGI_APPLICATION = "spotify.asgi.application"  # app chính là 'spotify'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}

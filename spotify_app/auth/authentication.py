@@ -1,5 +1,6 @@
 import datetime
 import json
+from types import SimpleNamespace
 import jwt
 import requests
 from rest_framework import authentication, exceptions
@@ -31,7 +32,7 @@ class ClerkJWTAuthentication(BaseAuthentication):
                     break
 
             if not public_key:
-                print("❌ Không tìm thấy public key")
+                print("Không tìm thấy public key")
                 raise AuthenticationFailed("Không tìm thấy public key")
 
             # Giải mã token
@@ -49,15 +50,14 @@ class ClerkJWTAuthentication(BaseAuthentication):
                 "first_name": payload.get("first_name"),
                 "last_name": payload.get("last_name"),
                 "image_url": payload.get("imageUrl"),
+                "clerk_id": payload.get("sub"),
                 "is_authenticated": True,
                 "is_active": True
             }
             
-            # Đặc biệt quan trọng: Gán email vào cả attribute và property
-            user = type("User", (), user_dict)
-            user.email = payload.get("email_address")  # Thêm dòng này
-            
-            return (user, None)  # Trả về tuple (user, None)
+          
+            user = SimpleNamespace(**user_dict)  
+            return (user, None)  
         except Exception as e:
-            print("❌ Lỗi xác thực:", str(e))
+            print("Lỗi xác thực:", str(e))
             raise AuthenticationFailed(f"Token không hợp lệ: {str(e)}")

@@ -1,6 +1,7 @@
+from dotenv import load_dotenv
+
 # adminView.py
 import os
-from dotenv import load_dotenv
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -9,16 +10,7 @@ from spotify_app.auth.authentication import ClerkJWTAuthentication
 # Load biến môi trường
 load_dotenv()
 
-# adminView.py
-import os
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from spotify_app.auth.authentication import ClerkJWTAuthentication
-
 class AdminCheckView(APIView):
-    authentication_classes = [ClerkJWTAuthentication]
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         # Kiểm tra email từ user object
@@ -33,10 +25,7 @@ class AdminCheckView(APIView):
         is_admin = user_email == admin_email
 
         if not is_admin:
-            print(f"⛔ Unauthorized access attempt by: {user_email}")
             return Response({"message": "Unauthorized - admin privileges required"}, status=403)
-
-        print(f"✅ Admin access granted to: {user_email}")
         return Response({
             "email": user_email,
             "admin": is_admin,

@@ -21,9 +21,28 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.routers import DefaultRouter
 from spotify_app.api.adminView import AdminCheckView
 router = DefaultRouter()
+from spotify_app.api.statsView import StatsView
+# from spotify_app.api.messageView import UserMessagesView
+from spotify_app.api.messageView import *
+from spotify_app.api.songView import (
+    get_all_songs,
+    get_featured_songs,
+    get_made_for_you_songs,
+    get_trending_songs,
+)
+
 urlpatterns = [
    # path('admin/', admin.site.urls),
     path("auth/callback", ClerkAuthCallback.as_view()),
+    path("songs/", get_all_songs),
+    path("songs/featured/", get_featured_songs),
+    path("songs/made-for-you/", get_made_for_you_songs),
+    path("songs/trending/", get_trending_songs),
     path("admin/check/",AdminCheckView.as_view()),
+    path('stats/', StatsView.as_view()),
+    # path("users/messages/<int:user_id>", UserMessagesView.as_view()),
+    # path('users/messages/<int:receiver_id>/', get_messages),
+    path('users/messages/<str:clerk_id>/', get_messages_by_clerk_id),
     path('', include('spotify_app.urls'))
+    
 ]
