@@ -11,6 +11,7 @@ from spotify_app.models.user import User
 from spotify_app.serializers.songserializers import songSerializer
 import traceback
 from django.contrib.auth import get_user_model
+import os
 
 from ..auth.authentication import ClerkJWTAuthentication
 from ..auth.permission import IsAdminUser
@@ -102,9 +103,12 @@ class CreateSongView(APIView):
                 artist=artist,
                 duration=int(duration),
                 audio_url=audio_url,
-                image_url=image_url,
-                album=album
+                image_url=image_url
             )
+
+            # Nếu có album_id, thêm song vào album thông qua many-to-many
+            if album_id and album:
+                album.songs.add(song)
 
             serializer = songSerializer(song)
 
@@ -121,13 +125,36 @@ class DeleteSongView(APIView):
 
     def delete(self, request, id):
         try:
+            # Kiểm tra quyền admin dựa vào email
+            user_email = getattr(request.user, "email", None)
+            admin_email = os.getenv("ADMIN_EMAIL", "phanquangduytvt@gmail.com")
+            is_admin = user_email == admin_email
+            print(f"User email: {user_email}, is_admin: {is_admin}")
+            if not is_admin:
+                return Response({"error": "You do not have permission to delete this song."}, status=status.HTTP_403_FORBIDDEN)
+
             song = Song.objects.get(pk=id)
 
-            if song.album_id:
-                album = Album.objects.get(pk=song.album_id)
-                if hasattr(album, "songs"):
-                    album.songs.remove(song)
+            # Xóa khỏi tất cả các album (nếu có quan hệ many-to-many)
+            song.albums.clear()
 
+            # Xóa file audio và image trên Cloudinary nếu có
+            if song.audio_url:
+                try:
+                    audio_public_id = song.audio_url.split('/')[-1].split('.')[0]
+                    print(f"Deleting audio from Cloudinary: {audio_public_id}")
+                    cloudinary.uploader.destroy(audio_public_id)
+                except Exception as e:
+                    print(f"Error deleting audio from Cloudinary: {str(e)}")
+            if song.image_url:
+                try:
+                    image_public_id = song.image_url.split('/')[-1].split('.')[0]
+                    print(f"Deleting image from Cloudinary: {image_public_id}")
+                    cloudinary.uploader.destroy(image_public_id)
+                except Exception as e:
+                    print(f"Error deleting image from Cloudinary: {str(e)}")
+
+            # Xóa bài hát
             song.delete()
 
             return Response({"message": "Song deleted successfully"}, status=status.HTTP_200_OK)
