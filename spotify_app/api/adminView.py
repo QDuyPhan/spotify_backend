@@ -20,16 +20,23 @@ class AdminCheckView(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get(self, request):
+        # Debug: Print all headers
+        print("🔍 Request headers:", dict(request.headers))
+        
         # Kiểm tra email từ user object
         user_email = getattr(request.user, "email", None)
         if not user_email:
+            print("❌ No email found in user object")
             return Response({"error": "Email not found in user object"}, status=400)
 
         print(f"🧾 User email from request: {user_email}")
 
         # Kiểm tra quyền admin
         admin_email = os.getenv("ADMIN_EMAIL", "phanquangduytvt@gmail.com")
+        print(f"🔑 Admin email from env: {admin_email}")
+        
         is_admin = user_email == admin_email
+        print(f"🔒 Is admin check: {is_admin}")
 
         if not is_admin:
             print(f"⛔ Unauthorized access attempt by: {user_email}")
