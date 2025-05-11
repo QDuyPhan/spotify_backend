@@ -11,20 +11,12 @@ class Command(BaseCommand):
         Album.objects.all().delete()
 
         songs_data = [
-            {"title": "City Rain", "artist": "Urban Echo", "image_url": "/cover-images/7.jpg", "audio_url": "/songs/7.mp3", "duration": 39},
-            {"title": "Neon Lights", "artist": "Night Runners", "image_url": "/cover-images/5.jpg", "audio_url": "/songs/5.mp3", "duration": 36},
-            {"title": "Urban Jungle", "artist": "City Lights", "image_url": "/cover-images/15.jpg", "audio_url": "/songs/15.mp3", "duration": 36},
-            {"title": "Neon Dreams", "artist": "Cyber Pulse", "image_url": "/cover-images/13.jpg", "audio_url": "/songs/13.mp3", "duration": 39},
-            {"title": "Summer Daze", "artist": "Coastal Kids", "image_url": "/cover-images/4.jpg", "audio_url": "/songs/4.mp3", "duration": 24},
-            {"title": "Ocean Waves", "artist": "Coastal Drift", "image_url": "/cover-images/9.jpg", "audio_url": "/songs/9.mp3", "duration": 28},
-            {"title": "Crystal Rain", "artist": "Echo Valley", "image_url": "/cover-images/16.jpg", "audio_url": "/songs/16.mp3", "duration": 230},
-            {"title": "Starlight", "artist": "Luna Bay", "image_url": "/cover-images/10.jpg", "audio_url": "/songs/10.mp3", "duration": 30},
-            {"title": "Stay With Me", "artist": "Sarah Mitchell", "image_url": "/cover-images/1.jpg", "audio_url": "/songs/1.mp3", "duration": 46},
-            {"title": "Midnight Drive", "artist": "The Wanderers", "image_url": "/cover-images/2.jpg", "audio_url": "/songs/2.mp3", "duration": 41},
-            {"title": "Moonlight Dance", "artist": "Silver Shadows", "image_url": "/cover-images/14.jpg", "audio_url": "/songs/14.mp3", "duration": 27},
-            {"title": "Lost in Tokyo", "artist": "Electric Dreams", "image_url": "/cover-images/3.jpg", "audio_url": "/songs/3.mp3", "duration": 24},
-            {"title": "Neon Tokyo", "artist": "Future Pulse", "image_url": "/cover-images/17.jpg", "audio_url": "/songs/17.mp3", "duration": 39},
-            {"title": "Purple Sunset", "artist": "Dream Valley", "image_url": "/cover-images/12.jpg", "audio_url": "/songs/12.mp3", "duration": 17},
+            {"title": "PHÓNG ZÌN ZÌN", "artist": "tilinh, Low G", "image_url": "/cover-images/PHÓNG ZÌN ZÌN.jpg", "audio_url": "/songs/PHÓNG ZÌN ZÌN.mp3", "duration": 203},
+            {"title": "Thủ Đô Cypher (Remix)", "artist": "Rapital, RPT Orijinn, RZ Ma$, MCK, Low G", "image_url": "/cover-images/Thủ Đô Cypher (Remix).jpg", "audio_url": "/songs/Thủ Đô Cypher (Remix).mp3", "duration": 193},
+            {"title": "HOP ON DA SHOW", "artist": "tilinh, Low G", "image_url": "/cover-images/HOP ON DA SHOW.jpg", "audio_url": "/songs/HOP ON DA SHOW.mp3", "duration": 176},
+            {"title": "Có Em", "artist": "Madihu, Low G", "image_url": "/cover-images/Có Em.jpg", "audio_url": "/songs/Có Em.mp3", "duration": 219},
+            {"title": "Tay To", "artist": "Rapital, PhongKhin, MCK", "image_url": "/cover-images/Tay To.jpg", "audio_url": "/songs/Tay To.mp3", "duration": 165},
+            {"title": "XTC (Xích Thêm Chút) (Remix)", "artist": "Rapital, Groovie, MCK, tlinh", "image_url": "/cover-images/Tay To.jpg", "audio_url": "/songs/Tay To.mp3", "duration": 244},
         ]
 
         created_songs = []
@@ -41,10 +33,8 @@ class Command(BaseCommand):
             created_songs.append(song)
 
         album_info = [
-            {"title": "Urban Nights", "image_url": "/albums/1.jpg", "songs": created_songs[0:4]},
-{"title": "Coastal Dreaming", "image_url": "/albums/2.jpg", "songs": created_songs[4:8]},
-            {"title": "Midnight Sessions", "image_url": "/albums/3.jpg", "songs": created_songs[8:11]},
-            {"title": "Eastern Dreams", "image_url": "/albums/4.jpg", "songs": created_songs[11:14]},
+            {"title": "Low G", "image_url": "/albums/lowg.jpg", "songs": created_songs[0:5]},
+
         ]
 
         for album in album_info:
@@ -52,7 +42,7 @@ class Command(BaseCommand):
                 title=album["title"],
                 artist="Various Artists",
                 image_url=album["image_url"],
-                release_year=2024
+                release_year=2025
             )
             for song in album["songs"]:
                 song.album = new_album
